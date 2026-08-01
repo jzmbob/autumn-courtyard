@@ -1,6 +1,8 @@
-import {
+﻿import {
   advanceMotion,
   createMotionState,
+  TURN_FRAMES,
+  WALK_SPEED,
   sampleGait,
   solveTwoBone,
 } from './cat-motion-core.mjs';
@@ -187,9 +189,18 @@ function renderTurn(state, nodes) {
   mirrorView(nodes.profile, view.mirrorProfile);
   mirrorView(nodes.threeQuarter, view.mirrorThreeQuarter);
 }
-function renderArtwork(state, nodes) {
-  const bodyBob = Math.sin(state.gait * Math.PI * 4) * 0.5;
-  const counterRotation = Math.sin(state.gait * Math.PI * 2) * 2;
+function motionBlend(state) {
+  if (state.mode === 'settle-before-turn'
+      || state.mode === 'turn'
+      || state.mode === 'settle-after-turn') {
+    return 0;
+  }
+  return Math.max(0, Math.min(1, state.speed / WALK_SPEED));
+}
+
+function renderArtwork(state, nodes, blend) {
+  const bodyBob = Math.sin(state.gait * Math.PI * 4) * 0.5 * blend;
+  const counterRotation = Math.sin(state.gait * Math.PI * 2) * 2 * blend;
 
   nodes.body.setAttribute('transform', `translate(0 ${number(bodyBob)})`);
   nodes.head.setAttribute(
@@ -206,13 +217,11 @@ function renderArtwork(state, nodes) {
   );
 }
 
-function render(state, nodes, motionPixelsPerUnit) {
-  const stationary = state.mode === 'settle-before-turn'
-    || state.mode === 'turn'
-    || state.mode === 'settle-after-turn';
-  const gait = stationary
-    ? Object.fromEntries(Object.keys(LEG_RIGS).map(name => [name, { x: 0, y: 0, planted: true }]))
-    : sampleGait(state.gait);
+export function render(state, nodes, motionPixelsPerUnit) {
+  const blend = motionBlend(state);
+  const gait = Object.fromEntries(Object.entries(sampleGait(state.gait)).map(([name, offset]) => (
+    [name, { ...offset, y: offset.y * blend }]
+  )));
 
   for (const [name, leg] of Object.entries(nodes.legs)) {
     renderLeg(leg, gait[name]);
@@ -220,9 +229,24 @@ function render(state, nodes, motionPixelsPerUnit) {
 
   nodes.path.style.transform = `translateX(${number(state.x * motionPixelsPerUnit)}px)`;
   nodes.rig.style.transformOrigin = 'center center';
-  nodes.rig.style.transform = state.direction < 0 && state.mode !== 'turn' ? 'scaleX(-1)' : '';
+  nodes.rig.style.transform = state.direction < 0 ? 'scaleX(-1)' : '';
   renderTurn(state, nodes);
-  renderArtwork(state, nodes);
+  renderArtwork(state, nodes, blend);
+}
+
+export function visibleStateForTick(previousVisibleState, currentState) {
+  if (previousVisibleState?.mode === 'turn'
+      && currentState.mode !== 'turn'
+      && previousVisibleState.turnFrame < TURN_FRAMES - 1) {
+    return {
+      ...currentState,
+      mode: 'turn',
+      direction: previousVisibleState.direction,
+      speed: 0,
+      turnFrame: TURN_FRAMES - 1,
+    };
+  }
+  return currentState;
 }
 
 function measureTravel(nodes) {
@@ -251,6 +275,7 @@ function startMotion(nodes) {
 
   nodes.path.dataset.motion = 'active';
   let state = createMotionState();
+  let visibleState = null;
   let lastTimestamp = null;
 
   function tick(timestamp) {
@@ -262,7 +287,8 @@ function startMotion(nodes) {
     if (!document.hidden) {
       const { travelPixels, motionPixelsPerUnit } = measureTravel(nodes);
       state = advanceMotion(state, dtSeconds, travelPixels);
-      render(state, nodes, motionPixelsPerUnit);
+      visibleState = visibleStateForTick(visibleState, state);
+      render(visibleState, nodes, motionPixelsPerUnit);
     }
 
     window.requestAnimationFrame(tick);
@@ -275,3 +301,6 @@ if (typeof document !== 'undefined' && typeof window !== 'undefined') {
   const nodes = cacheDom();
   if (nodes) startMotion(nodes);
 }
+
+
+
