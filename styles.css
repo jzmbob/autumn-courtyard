@@ -1,0 +1,146 @@
+:root {
+  --cat-width: clamp(170px, 17vw, 300px);
+  --travel: calc(100vw - var(--cat-width) - 16vw);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: #d9bd79;
+}
+
+.scene {
+  position: fixed;
+  inset: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    linear-gradient(to bottom, rgb(255 244 211 / 3%), rgb(116 91 35 / 5%)),
+    url("autumn-courtyard.webp") center center / cover no-repeat;
+}
+
+.scene::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 44%, transparent 52%, rgb(92 63 20 / 8%) 115%);
+  mix-blend-mode: multiply;
+}
+
+.cat-path {
+  position: absolute;
+  z-index: 1;
+  left: 8vw;
+  bottom: clamp(8%, 11vh, 15%);
+  width: var(--cat-width);
+  aspect-ratio: 1.394;
+  transform-origin: center bottom;
+  animation: cat-travel 18s linear infinite;
+  will-change: transform;
+}
+
+.cat {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url("walking-cat-gait-8.png");
+  background-position: 0 0;
+  background-size: 800% 100%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 3px 2px rgb(74 55 28 / 13%));
+  animation:
+    cat-feet 0.8s steps(8) infinite,
+    cat-step 0.8s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.cat-shadow {
+  position: absolute;
+  z-index: -1;
+  left: 17%;
+  right: 5%;
+  bottom: 2%;
+  height: 8%;
+  border-radius: 50%;
+  background: rgb(65 58 34 / 28%);
+  filter: blur(7px);
+  transform: scaleY(0.58);
+  transform-origin: center;
+  animation: shadow-step 0.72s ease-in-out infinite alternate;
+}
+
+@keyframes cat-travel {
+  0%, 2% {
+    transform: translateX(0) scaleX(-1);
+  }
+  48%, 50% {
+    transform: translateX(var(--travel)) scaleX(-1);
+  }
+  50.01%, 52% {
+    transform: translateX(var(--travel)) scaleX(1);
+  }
+  98%, 100% {
+    transform: translateX(0) scaleX(1);
+  }
+}
+
+@keyframes cat-step {
+  from { transform: translateY(0) rotate(-0.3deg); }
+  to { transform: translateY(-4px) rotate(0.3deg); }
+}
+
+@keyframes cat-feet {
+  from { background-position: 0 0; }
+  to { background-position: 114.2857% 0; }
+}
+
+@keyframes shadow-step {
+  from { opacity: 0.74; transform: scaleX(1) scaleY(0.58); }
+  to { opacity: 0.55; transform: scaleX(0.92) scaleY(0.5); }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --cat-width: clamp(125px, 34vw, 180px);
+    --travel: calc(100vw - var(--cat-width) - 12vw);
+  }
+
+  .scene {
+    background-position: 54% center;
+  }
+
+  .cat-path {
+    left: 6vw;
+    bottom: clamp(10%, 14vh, 18%);
+    animation-duration: 14s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cat-path {
+    left: 50%;
+    animation: none;
+    transform: translateX(-50%);
+  }
+
+  .cat,
+  .cat-shadow {
+    animation: none;
+  }
+}
