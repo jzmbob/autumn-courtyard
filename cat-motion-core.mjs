@@ -1,4 +1,4 @@
-export const LEG_PHASES = Object.freeze({
+﻿export const LEG_PHASES = Object.freeze({
   nearFore: 0,
   farHind: 0.25,
   farFore: 0.5,
@@ -71,7 +71,7 @@ export const TURN_DURATION = 0.75;
 export const TURN_FRAMES = 20;
 export const SETTLE_AFTER_TURN = 0.25;
 
-const WALK_SPEED = 42;
+export const WALK_SPEED = 42;
 const ACCELERATION = 42;
 
 export function createMotionState() {
