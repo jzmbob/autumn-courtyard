@@ -49,9 +49,9 @@ body {
   left: 8vw;
   bottom: clamp(8%, 11vh, 15%);
   width: var(--cat-width);
-  aspect-ratio: 1.394;
+  aspect-ratio: 1.2308;
   transform-origin: center bottom;
-  animation: cat-travel 18s linear infinite;
+  animation: cat-travel 20s linear infinite;
   will-change: transform;
 }
 
@@ -59,15 +59,32 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  background-image: url("walking-cat-gait-8.png");
+  filter: drop-shadow(0 2px 2px rgb(74 55 28 / 12%));
+}
+
+.cat-sprite {
+  position: absolute;
+  inset: 0;
   background-position: 0 0;
-  background-size: 800% 100%;
   background-repeat: no-repeat;
-  filter: drop-shadow(0 3px 2px rgb(74 55 28 / 13%));
+  will-change: background-position, opacity;
+}
+
+.cat-walk {
+  background-image: url("walking-cat-gait-24.png");
+  background-size: 2400% 100%;
   animation:
-    cat-feet 0.8s steps(8) infinite,
-    cat-step 0.8s ease-in-out infinite alternate;
-  will-change: transform;
+    walk-frames 0.96s steps(24) infinite,
+    walk-visibility 20s steps(1, end) infinite;
+}
+
+.cat-turn {
+  background-image: url("turning-cat-20.png");
+  background-size: 2000% 100%;
+  opacity: 0;
+  animation:
+    turn-frames 20s steps(20) infinite,
+    turn-visibility 20s steps(1, end) infinite;
 }
 
 .cat-shadow {
@@ -75,44 +92,72 @@ body {
   z-index: -1;
   left: 17%;
   right: 5%;
-  bottom: 2%;
-  height: 8%;
+  bottom: 1.5%;
+  height: 7%;
   border-radius: 50%;
-  background: rgb(65 58 34 / 28%);
-  filter: blur(7px);
-  transform: scaleY(0.58);
+  background: rgb(65 58 34 / 24%);
+  filter: blur(6px);
+  transform: scaleY(0.5);
   transform-origin: center;
-  animation: shadow-step 0.72s ease-in-out infinite alternate;
 }
 
 @keyframes cat-travel {
-  0%, 2% {
+  0% {
     transform: translateX(0) scaleX(-1);
+    animation-timing-function: cubic-bezier(0.34, 0, 0.3, 1);
   }
-  48%, 50% {
+  3% {
+    transform: translateX(calc(var(--travel) * 0.025)) scaleX(-1);
+    animation-timing-function: linear;
+  }
+  42% {
+    transform: translateX(calc(var(--travel) * 0.975)) scaleX(-1);
+    animation-timing-function: cubic-bezier(0.2, 0, 0.25, 1);
+  }
+  45%, 50% {
     transform: translateX(var(--travel)) scaleX(-1);
   }
-  50.01%, 52% {
+  50.001% {
     transform: translateX(var(--travel)) scaleX(1);
+    animation-timing-function: cubic-bezier(0.34, 0, 0.3, 1);
   }
-  98%, 100% {
+  53% {
+    transform: translateX(calc(var(--travel) * 0.975)) scaleX(1);
+    animation-timing-function: linear;
+  }
+  92% {
+    transform: translateX(calc(var(--travel) * 0.025)) scaleX(1);
+    animation-timing-function: cubic-bezier(0.2, 0, 0.25, 1);
+  }
+  95%, 100% {
     transform: translateX(0) scaleX(1);
   }
 }
 
-@keyframes cat-step {
-  from { transform: translateY(0) rotate(-0.3deg); }
-  to { transform: translateY(-4px) rotate(0.3deg); }
-}
-
-@keyframes cat-feet {
+@keyframes walk-frames {
   from { background-position: 0 0; }
-  to { background-position: 114.2857% 0; }
+  to { background-position: 104.3478% 0; }
 }
 
-@keyframes shadow-step {
-  from { opacity: 0.74; transform: scaleX(1) scaleY(0.58); }
-  to { opacity: 0.55; transform: scaleX(0.92) scaleY(0.5); }
+@keyframes walk-visibility {
+  0%, 44.999% { opacity: 1; }
+  45%, 49.999% { opacity: 0; }
+  50%, 94.999% { opacity: 1; }
+  95%, 100% { opacity: 0; }
+}
+
+@keyframes turn-frames {
+  0%, 44.999% { background-position: 0 0; }
+  50% { background-position: 105.2632% 0; }
+  50.001%, 94.999% { background-position: 0 0; }
+  100% { background-position: 105.2632% 0; }
+}
+
+@keyframes turn-visibility {
+  0%, 44.999% { opacity: 0; }
+  45%, 49.999% { opacity: 1; }
+  50%, 94.999% { opacity: 0; }
+  95%, 100% { opacity: 1; }
 }
 
 @media (max-width: 700px) {
@@ -128,7 +173,12 @@ body {
   .cat-path {
     left: 6vw;
     bottom: clamp(10%, 14vh, 18%);
-    animation-duration: 14s;
+    animation-duration: 18s;
+  }
+
+  .cat-walk,
+  .cat-turn {
+    animation-duration: 0.96s, 18s;
   }
 }
 
@@ -139,8 +189,12 @@ body {
     transform: translateX(-50%);
   }
 
-  .cat,
+  .cat-sprite,
   .cat-shadow {
     animation: none;
+  }
+
+  .cat-turn {
+    display: none;
   }
 }
