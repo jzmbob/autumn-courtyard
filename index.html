@@ -6,19 +6,147 @@
   <meta name="theme-color" content="#e8c783">
   <title>秋日庭院</title>
   <link rel="preload" href="autumn-courtyard.webp" as="image">
-  <link rel="preload" href="walking-cat-gait-24.png" as="image">
-  <link rel="preload" href="turning-cat-20.png" as="image">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <main class="scene" aria-label="秋日庭院">
-    <div class="cat-path" aria-hidden="true">
-      <div class="cat">
-        <span class="cat-sprite cat-walk"></span>
-        <span class="cat-sprite cat-turn"></span>
-        <span class="cat-shadow"></span>
-      </div>
+    <div class="cat-path">
+      <svg id="cat-rig" class="cat-rig" viewBox="0 0 360 260" role="presentation" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="fur-main" x1="0" y1="0" x2="0.82" y2="1">
+            <stop offset="0" stop-color="#fffdf4"/>
+            <stop offset="0.46" stop-color="#f4ecdc"/>
+            <stop offset="1" stop-color="#d9cdb9"/>
+          </linearGradient>
+          <radialGradient id="fur-light" cx="0.35" cy="0.25" r="0.82">
+            <stop offset="0" stop-color="#fffef8"/>
+            <stop offset="0.7" stop-color="#efe5d3"/>
+            <stop offset="1" stop-color="#cfc2ae"/>
+          </radialGradient>
+          <linearGradient id="fur-shadow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#d5cab9"/>
+            <stop offset="1" stop-color="#b8aa98"/>
+          </linearGradient>
+          <linearGradient id="grey-marking" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#a9a49c" stop-opacity="0.76"/>
+            <stop offset="1" stop-color="#77756f" stop-opacity="0.5"/>
+          </linearGradient>
+          <linearGradient id="collar-red" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#b85045"/>
+            <stop offset="1" stop-color="#7d2f2d"/>
+          </linearGradient>
+          <radialGradient id="ground-shadow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stop-color="#473a26" stop-opacity="0.28"/>
+            <stop offset="1" stop-color="#473a26" stop-opacity="0"/>
+          </radialGradient>
+          <filter id="watercolor-edge" x="-8%" y="-8%" width="116%" height="116%" color-interpolation-filters="sRGB">
+            <feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="7" result="paper"/>
+            <feDisplacementMap in="SourceGraphic" in2="paper" scale="0.7" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+        </defs>
+
+        <ellipse class="cat-shadow" cx="188" cy="230" rx="103" ry="8" fill="url(#ground-shadow)"/>
+
+        <g id="profile-view" class="cat-view">
+          <g id="cat-tail-base" class="tail-segment">
+            <path class="tail-underpaint" d="M262 132 C294 135 312 154 313 178"/>
+            <g id="cat-tail-tip" class="tail-segment">
+              <path class="tail-underpaint" d="M313 178 C314 198 330 199 340 185"/>
+              <path class="tail-marking" d="M326 196 C333 194 338 190 340 185"/>
+            </g>
+          </g>
+
+          <g class="leg leg-far" id="leg-far-hind" data-origin="224 150" data-ik-origin="224 171">
+            <path class="limb-bone" data-segment="upper" data-length="31" d="M0 0 H31" transform="translate(224 150) rotate(80)"/>
+            <path class="limb-bone" data-segment="lower" data-length="28" d="M0 0 H28" transform="translate(229.38 180.53) rotate(100)"/>
+            <rect class="paw-shape" data-segment="paw" x="-9" y="-8" width="18" height="8" rx="4" transform="translate(224 224)"/>
+          </g>
+          <g class="leg leg-far" id="leg-far-fore" data-origin="126 149" data-ik-origin="126 171">
+            <path class="limb-bone" data-segment="upper" data-length="31" d="M0 0 H31" transform="translate(126 149) rotate(88)"/>
+            <path class="limb-bone" data-segment="lower" data-length="28" d="M0 0 H28" transform="translate(127.08 179.98) rotate(92)"/>
+            <rect class="paw-shape" data-segment="paw" x="-9" y="-8" width="18" height="8" rx="4" transform="translate(126 224)"/>
+          </g>
+
+          <g id="cat-body" class="cat-paint">
+            <ellipse cx="185" cy="132" rx="92" ry="46" fill="url(#fur-main)"/>
+            <ellipse cx="175" cy="117" rx="69" ry="25" fill="#fffdf5" opacity="0.34"/>
+            <path class="body-marking" d="M211 89 C221 98 224 108 222 118 C216 112 208 108 200 106 C205 99 207 94 211 89 Z"/>
+            <path class="body-marking soft" d="M236 101 C246 109 250 119 248 129 C240 122 232 119 224 117 C231 111 234 106 236 101 Z"/>
+            <path class="body-marking soft" d="M252 127 C260 137 261 148 256 158 C249 149 243 144 235 141 C243 137 248 132 252 127 Z"/>
+            <path class="belly-wash" d="M111 144 C132 172 183 183 233 167 C215 180 186 184 157 177 C135 172 119 161 111 144 Z"/>
+          </g>
+
+          <g class="leg leg-near" id="leg-near-hind" data-origin="245 151" data-ik-origin="245 171">
+            <path class="limb-bone" data-segment="upper" data-length="31" d="M0 0 H31" transform="translate(245 151) rotate(98)"/>
+            <path class="limb-bone" data-segment="lower" data-length="28" d="M0 0 H28" transform="translate(240.69 181.70) rotate(82)"/>
+            <rect class="paw-shape" data-segment="paw" x="-9" y="-8" width="18" height="8" rx="4" transform="translate(245 224)"/>
+          </g>
+          <g class="leg leg-near" id="leg-near-fore" data-origin="145 150" data-ik-origin="145 171">
+            <path class="limb-bone" data-segment="upper" data-length="31" d="M0 0 H31" transform="translate(145 150) rotate(84)"/>
+            <path class="limb-bone" data-segment="lower" data-length="28" d="M0 0 H28" transform="translate(148.24 180.83) rotate(96)"/>
+            <rect class="paw-shape" data-segment="paw" x="-9" y="-8" width="18" height="8" rx="4" transform="translate(145 224)"/>
+          </g>
+
+          <path class="join-cover" d="M118 151 C126 144 137 144 148 151 L150 166 C139 162 128 162 117 166 Z"/>
+          <path class="join-cover" d="M222 151 C232 143 247 144 257 153 L258 169 C246 163 233 163 222 168 Z"/>
+
+          <g id="cat-head" class="cat-paint">
+            <path class="ear" d="M63 83 C62 65 67 51 78 45 L88 76 Z"/>
+            <path class="ear" d="M91 74 C96 58 104 49 115 48 L113 87 Z"/>
+            <path class="ear-inner" d="M69 70 C69 61 72 55 77 52 L82 72 Z"/>
+            <path class="ear-inner" d="M99 70 C103 61 107 56 112 54 L109 76 Z"/>
+            <circle cx="91" cy="110" r="38" fill="url(#fur-light)"/>
+            <path class="head-marking" d="M71 77 C82 70 97 70 109 77 C105 86 101 91 96 95 C89 88 80 83 71 77 Z"/>
+            <path class="head-stripe" d="M87 75 L84 91"/>
+            <path class="head-stripe" d="M99 77 L95 91"/>
+            <path class="collar" d="M112 128 C111 137 108 143 102 149"/>
+            <path class="cheek" d="M64 117 C55 120 49 126 47 134 C56 137 67 134 73 127"/>
+            <path class="eye" d="M70 105 Q77 100 84 105 Q77 109 70 105 Z"/>
+            <path class="eye-line" d="M70 104 Q77 100 84 104"/>
+            <path class="nose" d="M52 119 Q57 116 61 120 Q57 125 52 119 Z"/>
+            <path class="mouth" d="M57 123 Q59 128 64 128"/>
+            <path class="whisker" d="M57 124 C45 121 37 121 28 123 M59 128 C46 129 38 132 31 136 M61 131 C50 136 44 141 39 146"/>
+            <circle class="collar-tag" cx="106" cy="146" r="4"/>
+          </g>
+        </g>
+
+        <g id="turn-three-quarter" class="cat-view turn-view" opacity="0">
+          <path class="static-tail" d="M253 135 C291 139 306 164 293 190"/>
+          <path class="static-leg far" d="M148 160 L143 211 M224 160 L230 211"/>
+          <ellipse cx="188" cy="137" rx="76" ry="44" fill="url(#fur-main)"/>
+          <path class="body-marking soft" d="M218 99 C230 110 233 124 228 136 C219 126 209 121 198 118 C207 111 213 105 218 99 Z"/>
+          <path class="static-leg" d="M166 159 L164 216 M211 159 L214 216"/>
+          <ellipse class="static-paw" cx="163" cy="220" rx="10" ry="4"/>
+          <ellipse class="static-paw" cx="215" cy="220" rx="10" ry="4"/>
+          <path class="ear" d="M119 84 L120 50 L139 78 Z"/>
+          <path class="ear" d="M151 77 L166 52 L170 89 Z"/>
+          <circle cx="145" cy="111" r="37" fill="url(#fur-light)"/>
+          <path class="head-marking" d="M125 80 C137 72 151 73 162 82 C157 91 152 96 145 99 C140 91 132 85 125 80 Z"/>
+          <path class="collar" d="M165 128 C164 137 161 143 157 148"/>
+          <path class="eye-line" d="M126 106 Q132 102 138 106 M148 105 Q155 102 160 106"/>
+          <path class="nose" d="M139 119 Q145 116 150 119 Q145 125 139 119 Z"/>
+        </g>
+
+        <g id="turn-front" class="cat-view turn-view" opacity="0">
+          <path class="static-tail" d="M240 144 C279 151 292 179 275 200"/>
+          <path class="static-leg far" d="M159 160 L154 211 M211 160 L216 211"/>
+          <ellipse cx="185" cy="139" rx="62" ry="44" fill="url(#fur-main)"/>
+          <path class="body-marking soft" d="M198 98 C212 111 216 125 211 138 C202 127 193 122 184 119 C190 111 195 104 198 98 Z"/>
+          <path class="static-leg" d="M169 160 L169 216 M202 160 L202 216"/>
+          <ellipse class="static-paw" cx="169" cy="220" rx="10" ry="4"/>
+          <ellipse class="static-paw" cx="202" cy="220" rx="10" ry="4"/>
+          <path class="ear" d="M154 83 L154 49 L174 76 Z"/>
+          <path class="ear" d="M196 76 L216 49 L216 84 Z"/>
+          <circle cx="185" cy="110" r="38" fill="url(#fur-light)"/>
+          <path class="head-marking" d="M162 80 C176 71 194 71 208 80 C204 90 198 96 191 99 C185 90 173 85 162 80 Z"/>
+          <path class="collar" d="M157 132 Q185 146 213 132"/>
+          <path class="eye-line" d="M163 105 Q170 101 177 105 M193 105 Q200 101 207 105"/>
+          <path class="nose" d="M179 119 Q185 116 191 119 Q185 125 179 119 Z"/>
+          <path class="mouth" d="M185 123 Q181 129 176 128 M185 123 Q189 129 194 128"/>
+        </g>
+      </svg>
     </div>
   </main>
+  <script type="module" src="cat-motion.js"></script>
 </body>
 </html>
