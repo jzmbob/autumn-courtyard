@@ -49,7 +49,7 @@ body {
   left: 8vw;
   bottom: clamp(8%, 11vh, 15%);
   width: var(--cat-width);
-  aspect-ratio: 1.2308;
+  aspect-ratio: 1.3846;
   transform-origin: center bottom;
   animation: cat-travel 20s linear infinite;
   will-change: transform;
